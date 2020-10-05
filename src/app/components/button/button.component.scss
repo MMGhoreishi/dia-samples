@@ -1,0 +1,108 @@
+@import 'button-base';
+
+.dia-button,
+.dia-icon-button {
+	.dia-button-focus-overlay {
+		opacity: 0;
+	}
+}
+
+// Only basic and stroked buttons (not raised, FABs or icon buttons) have a hover style.
+// Use the same visual treatment for hover as for focus.
+.dia-button,
+.dia-stroked-button {
+	&:hover:not(.dia-button-disabled) .dia-button-focus-overlay {
+		opacity: 0.04;
+	}
+}
+
+// Disable the hover styles on non-hover devices. Since this is more of a progressive
+// enhancement and not all desktop browsers support this kind of media query, we can't
+// use something like `@media (hover)`.
+@media (hover: none) {
+
+	.dia-button,
+	.dia-stroked-button {
+		&:hover:not(.dia-button-disabled) .dia-button-focus-overlay {
+			opacity: 0;
+		}
+	}
+}
+
+// Should be placed after the `:hover` styles so the focused
+// styling coming in from `dia-button-base` takes precedence.
+.dia-button,
+.dia-icon-button,
+.dia-stroked-button,
+.dia-flat-button {
+	@include dia-button-base;
+}
+
+.dia-raised-button {
+	@include dia-raised-button;
+}
+
+.dia-stroked-button {
+	border: $dia-stroked-button-border-width solid currentColor;
+	padding: $dia-stroked-button-padding;
+	line-height: $dia-stroked-button-line-height;
+
+	// Since the stroked button has has an actual border that reduces the available space for
+	// child elements such as the ripple container or focus overlay, an inherited border radius
+	// for the absolute-positioned child elements does not work properly. This is because the
+	// child element cannot expand to the same boundaries as the parent element with a border.
+	// In order to work around this issue by *not* hiding overflow, we adjust the child elements
+	// to fully cover the actual button element. This means that the border-radius would be correct
+	// then. See: https://github.com/angular/components/issues/13738
+	.dia-button-ripple.dia-ripple,
+	.dia-button-focus-overlay {
+		top: -$dia-stroked-button-border-width;
+		left: -$dia-stroked-button-border-width;
+		right: -$dia-stroked-button-border-width;
+		bottom: -$dia-stroked-button-border-width;
+	}
+}
+
+.dia-icon-button {
+	padding: 0;
+
+	// Reset the min-width from the button base.
+	min-width: 0;
+
+	width: $dia-icon-button-size;
+	height: $dia-icon-button-size;
+
+	flex-shrink: 0;
+	line-height: $dia-icon-button-size;
+	border-radius: $dia-icon-button-border-radius;
+
+	i,
+	.dia-icon {
+		line-height: $dia-icon-button-line-height;
+	}
+}
+
+// Elements inside of all type of buttons should be vertical aligned in the middle.
+.dia-button,
+.dia-flat-button,
+.dia-stroked-button,
+.dia-raised-button,
+.dia-icon-button {
+	.dia-button-wrapper>* {
+		vertical-align: middle;
+	}
+}
+
+// Align icon-buttons correctly inside of standard, fill, and outline form-field appearances.
+.dia-form-field:not(.dia-form-field-appearance-legacy) {
+
+	.dia-form-field-prefix,
+	.dia-form-field-suffix {
+		.dia-icon-button {
+			display: block;
+			font-size: inherit;
+			width: 2.5em;
+			height: 2.5em;
+		}
+	}
+}
